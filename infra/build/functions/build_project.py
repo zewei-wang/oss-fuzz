@@ -41,7 +41,7 @@ FUZZING_BUILD_TYPE = 'fuzzing'
 INDEXER_BUILD_TYPE = 'indexer'
 
 GCB_LOGS_BUCKET = 'oss-fuzz-gcb-logs'
-GCB_EXPERIMENT_LOGS_BUCKET = 'oss-fuzz-gcb-experiment-logs'
+GCB_EXPERIMENT_LOGS_BUCKET = 'oss-fuzz-gcb-experiment-logs1'
 
 DEFAULT_ARCHITECTURES = ['x86_64']
 DEFAULT_ENGINES = ['libfuzzer', 'afl', 'honggfuzz', 'centipede']
@@ -689,6 +689,7 @@ def run_build(oss_fuzz_project,
                              timeout,
                              body_overrides=body_overrides,
                              tags=tags,
+                             use_build_pool=False,
                              experiment=experiment)
 
 

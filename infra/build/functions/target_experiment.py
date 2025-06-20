@@ -40,7 +40,9 @@ def run_experiment(project_name,
                    upload_reproducer_path,
                    tags,
                    use_cached_image,
-                   real_project_name=None):
+                   real_project_name=None,
+                   cloud_project='oss-fuzz'
+                   ):
   config = build_project.Config(testing=True,
                                 test_image_suffix='',
                                 repo=build_project.DEFAULT_OSS_FUZZ_REPO,
@@ -272,21 +274,23 @@ def run_experiment(project_name,
       steps,
       credentials,
       'experiment',
+      cloud_project,
       experiment=True,
       extra_tags=[experiment_name, project_name] + tags)
 
   print('Waiting for build', build_id)
   try:
-    build_lib.wait_for_build(build_id, credentials, 'oss-fuzz')
+    build_lib.wait_for_build(build_id, credentials, cloud_project)
   except (KeyboardInterrupt, SystemExit):
     # Cancel the build on exit, to avoid dangling builds.
-    build_lib.cancel_build(build_id, credentials, 'oss-fuzz')
+    build_lib.cancel_build(build_id, credentials, cloud_project)
 
 
 def main():
   """Runs a target experiment on GCB."""
   parser = argparse.ArgumentParser(sys.argv[0], description='Test projects')
   parser.add_argument('--project', required=True, help='Project name')
+  parser.add_argument('--cloud_project', required=True, help='Cloud Bucket name')
   parser.add_argument('--target', required=True, help='Target name')
   parser.add_argument('args',
                       nargs='+',
@@ -329,7 +333,7 @@ def main():
                  args.upload_build_log, args.upload_corpus,
                  args.upload_coverage, args.experiment_name,
                  args.upload_reproducer, args.tags, args.use_cached_image,
-                 args.real_project)
+                 args.real_project, args.cloud_project)
 
 
 if __name__ == '__main__':

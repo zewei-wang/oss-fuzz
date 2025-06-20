@@ -740,7 +740,8 @@ def run_build(  # pylint: disable=too-many-arguments, too-many-locals
       _tgz_local_build(oss_fuzz_project, tgz_file.name)
       gcs_client = storage.Client()
       # This is the automatically created Cloud Build bucket for Cloud Build.
-      bucket_name = gcs_client.project + '_cloudbuild'
+      # bucket_name = gcs_client.project + '_cloudbuild'
+      bucket_name = cloud_project
       bucket = gcs_client.bucket(bucket_name)
       blob_name = f'source/{str(uuid.uuid4())}.tgz'
       blob = bucket.blob(blob_name)
@@ -760,7 +761,7 @@ def run_build(  # pylint: disable=too-many-arguments, too-many-locals
                            cache_discovery=False,
                            client_options=REGIONAL_CLIENT_OPTIONS)
 
-  build_info = cloudbuild.projects().builds().create(projectId=cloud_project,
+  build_info = cloudbuild.projects().builds().create(projectId='studious-apex-460418-i2',
                                                      body=build_body).execute()
 
   build_id = build_info['metadata']['build']['id']
@@ -780,7 +781,7 @@ def wait_for_build(build_id, credentials, cloud_project):
 
   while True:
     try:
-      status = cloudbuild.projects().builds().get(projectId=cloud_project,
+      status = cloudbuild.projects().builds().get(projectId="studious-apex-460418-i2",
                                                   id=build_id).execute()
       if status.get('status') in ('SUCCESS', 'FAILURE', 'TIMEOUT',
                                   'INTERNAL_ERROR', 'EXPIRED', 'CANCELLED'):
